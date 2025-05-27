@@ -124,3 +124,37 @@ img{
     text-align:center;
     box-shadow: 2px 2px 3px #999;  
 }
+
+.contact-container {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  width: 100%;
+  padding: 20px;
+}
+
+.left-column, .right-column {
+  width: 45%;
+  padding: 20px;
+}
+
+.divider {
+  width: 2px;
+  background-color: #ccc;
+  margin: 0 10px;
+}
+
+.left-column {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.right-column {
+  text-align: left;
+}
+
+.right-column p {
+  font-size: 1rem;
+  margin-bottom: 15px;
+}
