@@ -15,15 +15,16 @@ const Login = ({ onClose }) => {
     e.preventDefault();
 
     const res = await fetch(login_url, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            "userName": userName,
-            "password": password
-        }),
-    });
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  credentials: "include", // ⬅️ ΣΗΜΑΝΤΙΚΟ για να αποθηκευτεί το session cookie
+  body: JSON.stringify({
+    userName: userName,
+    password: password,
+  }),
+});
     
     const json = await res.json();
     if (json.status != null && json.status === "Authenticated") {
