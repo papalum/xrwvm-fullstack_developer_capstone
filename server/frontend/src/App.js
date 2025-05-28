@@ -1,6 +1,9 @@
 import { Routes, Route } from "react-router-dom";
 import LoginPanel from "./components/Login/Login";
 import Register from "./components/Register/Register"; 
+import Dealers from './components/Dealers/Dealers';
+import Dealer from "./components/Dealers/Dealer"
+
 
 function App() {
   return (
@@ -8,9 +11,13 @@ function App() {
       <Route path="/login" element={<LoginPanel />} />
       <Route path="/register" element={<Register />} />
       {/* Add more routes as needed */}
+      <Route path="/dealers" element={<Dealers/>} />
+      <Route path="/dealer/:id" element={<Dealer/>} />
     </Routes>
   );
 }
 
 export default App;
+
+
 
