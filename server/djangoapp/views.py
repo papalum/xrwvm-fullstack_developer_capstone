@@ -4,7 +4,8 @@
  #from django.shortcuts import get_object_or_404, render, redirect
  #from django.contrib import messages
  #from datetime import datetime
-
+ 
+from django.shortcuts import render
 from django.http import JsonResponse
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User
@@ -24,18 +25,22 @@ logger = logging.getLogger(__name__)
 # Create a `login_request` view to handle sign in request
 @csrf_exempt
 def login_user(request):
-    # Get username and password from request.POST dictionary
-    data = json.loads(request.body)
-    username = data['userName']
-    password = data['password']
-    # Try to check if provide credential can be authenticated
-    user = authenticate(username=username, password=password)
-    data = {"userName": username}
-    if user is not None:
-        # If user is valid, call login method to login current user
-        login(request, user)
-        data = {"userName": username, "status": "Authenticated"}
-    return JsonResponse(data)
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            username = data['userName']
+            password = data['password']
+        except (json.JSONDecodeError, KeyError):
+            return JsonResponse({"error": "Invalid JSON or missing fields"}, status=400)
+
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return JsonResponse({"userName": username, "status": "Authenticated"})
+        else:
+            return JsonResponse({"error": "Invalid credentials"}, status=401)
+    else:
+        return JsonResponse({"error": "Method not allowed"}, status=405)
 
 # Create a `logout_request` view to handle sign out request
 @csrf_exempt
@@ -124,12 +129,15 @@ def get_dealer_reviews(request, dealer_id):
 
 # Create a `get_dealer_details` view to render the dealer details
 def get_dealer_details(request, dealer_id):
-    if(dealer_id):
-        endpoint = "/fetchDealer/"+str(dealer_id)
-        dealership = get_request(endpoint)
-        return JsonResponse({"status":200,"dealer":dealership})
+    if dealer_id:
+        endpoint = "/fetchDealer/" + str(dealer_id)
+        dealerships = get_request(endpoint)
+        if isinstance(dealerships, list) and len(dealerships) > 0:
+            return JsonResponse({"status": 200, "dealer": dealerships[0]})
+        else:
+            return JsonResponse({"status": 404, "message": "Dealer not found"})
     else:
-        return JsonResponse({"status":400,"message":"Bad Request"})
+        return JsonResponse({"status": 400, "message": "Bad Request"})
 
 # Create a `add_review` view to submit a review
 def add_review(request):
