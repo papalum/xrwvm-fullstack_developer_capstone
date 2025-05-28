@@ -137,13 +137,23 @@ def get_dealer_details(request, dealer_id):
         return JsonResponse({"status":400,"message":"Bad Request"})
 
 # Create a `add_review` view to submit a review
+@csrf_exempt
 def add_review(request):
-    if(request.user.is_anonymous == False):
-        data = json.loads(request.body)
+    if request.method != "POST":
+        return JsonResponse({"status": 405, "message": "Method not allowed"}, status=405)
+
+    if request.user.is_authenticated:
         try:
+            data = json.loads(request.body)
+            print("Incoming review data:", data)  # DEBUGGING
             response = post_review(data)
-            return JsonResponse({"status":200})
-        except:
-            return JsonResponse({"status":401,"message":"Error in posting review"})
+
+            # DEBUGGING: δες τι επιστρέφει η post_review()
+            print("Review post response:", response)
+
+            return JsonResponse({"status": 200, "message": "Review submitted successfully."})
+        except Exception as e:
+            print("Exception during review post:", e)  # DEBUGGING
+            return JsonResponse({"status": 500, "message": f"Error in posting review: {str(e)}"}, status=500)
     else:
-        return JsonResponse({"status":403,"message":"Unauthorized"})
+        return JsonResponse({"status": 403, "message": "Unauthorized. Please log in."}, status=403)
