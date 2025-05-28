@@ -33,6 +33,7 @@ urlpatterns = [
     # React frontend entry point
     path('dealers/', TemplateView.as_view(template_name="index.html")),
     path('dealer/<int:dealer_id>', TemplateView.as_view(template_name="index.html")),
+    path('postreview/<int:dealer_id>',TemplateView.as_view(template_name="index.html")),
 
     # Default catch-all for React SPA
     path('', TemplateView.as_view(template_name="index.html")),
