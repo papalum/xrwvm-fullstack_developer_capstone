@@ -25,6 +25,5 @@ spec:
         name: dealership
         ports:
         - containerPort: 8000
-      imagePullSecrets:
-      - name: ibmcr-secret
+          name: http
       restartPolicy: Always
